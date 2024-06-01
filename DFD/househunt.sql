@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 09, 2024 at 09:54 AM
+-- Generation Time: May 31, 2024 at 07:59 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -24,41 +24,39 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `appointment`
+-- Table structure for table `comments`
 --
 
-CREATE TABLE `appointment` (
-  `AppointmentId` int(11) NOT NULL,
-  `UserId` int(250) NOT NULL,
-  `DateAndTime` datetime(4) NOT NULL,
-  `UserLocation` text NOT NULL,
-  `MeetingPlace` text NOT NULL,
-  `ContactInformation` bigint(15) NOT NULL,
-  `Status` text NOT NULL,
-  `DateInput` datetime NOT NULL DEFAULT current_timestamp()
+CREATE TABLE `comments` (
+  `commentId` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `Comment` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
-
---
--- Dumping data for table `appointment`
---
-
-INSERT INTO `appointment` (`AppointmentId`, `UserId`, `DateAndTime`, `UserLocation`, `MeetingPlace`, `ContactInformation`, `Status`, `DateInput`) VALUES
-(1, 1, '2024-02-27 08:00:00.0000', 'Naga, Camarines Sur ', 'Daet, Camarines Norte', 950929656, '', '2024-02-27 00:03:24'),
-(2, 2, '2024-02-27 09:00:00.0000', 'Tigaon, Camarines Sur', 'Naga, Camarines Sur', 509296565, '', '2024-02-27 00:05:33'),
-(3, 5, '2024-02-27 08:00:00.0000', 'zone 3 hahahahah tabaco city', 'popo and kupa place', 950929656, '', '2024-03-07 12:26:12');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `conversation`
+-- Table structure for table `houses`
 --
 
-CREATE TABLE `conversation` (
-  `MessageId` int(11) NOT NULL,
-  `userId` int(11) NOT NULL,
-  `messagetext` text NOT NULL,
-  `dateinput` datetime NOT NULL DEFAULT current_timestamp()
+CREATE TABLE `houses` (
+  `houseId` int(11) NOT NULL,
+  `item_name` varchar(255) NOT NULL,
+  `location` varchar(255) NOT NULL,
+  `price` decimal(9,2) NOT NULL,
+  `type` enum('flat','shop','house','') NOT NULL,
+  `BHK` enum('1','2','3','4','5') NOT NULL,
+  `image` varchar(255) NOT NULL,
+  `date_input` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+--
+-- Dumping data for table `houses`
+--
+
+INSERT INTO `houses` (`houseId`, `item_name`, `location`, `price`, `type`, `BHK`, `image`, `date_input`) VALUES
+(1, 'BahayniKuya', 'Manila', 9999999.99, 'house', '3', 'pbbhouse.jpg', '2024-05-30 07:03:56'),
+(2, 'BahayniPeterParker', 'NewYork Manila', 800000.00, 'house', '5', 'peter-parker-house.jpg', '2024-05-30 07:10:31');
 
 -- --------------------------------------------------------
 
@@ -67,68 +65,45 @@ CREATE TABLE `conversation` (
 --
 
 CREATE TABLE `money` (
-  `ReportId` int(11) NOT NULL,
-  `TotalClients` int(250) NOT NULL,
+  `reportId` int(11) NOT NULL,
   `StartMonthYear` date NOT NULL,
   `EndMonthYear` date NOT NULL,
-  `TotalSales` double(15,3) NOT NULL
+  `TotalClients` int(255) NOT NULL,
+  `TotalSales` double(15,3) NOT NULL,
+  `dateinput` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
-
---
--- Dumping data for table `money`
---
-
-INSERT INTO `money` (`ReportId`, `TotalClients`, `StartMonthYear`, `EndMonthYear`, `TotalSales`) VALUES
-(1, 3, '2024-01-01', '2024-01-31', 1200300.000);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `reviews`
+-- Table structure for table `payment`
 --
 
-CREATE TABLE `reviews` (
-  `ReviewId` int(11) NOT NULL,
-  `userId` int(250) NOT NULL,
-  `houseitemNum` int(250) NOT NULL,
-  `Comment` text NOT NULL,
-  `DatePosted` datetime NOT NULL DEFAULT current_timestamp()
+CREATE TABLE `payment` (
+  `paymentId` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `houseId` int(11) NOT NULL,
+  `Fullname` varchar(255) NOT NULL,
+  `Email_Address` varchar(255) NOT NULL,
+  `Contact_Number` bigint(255) NOT NULL,
+  `Bank` enum('BDO','Landbank','Chinabank','') NOT NULL,
+  `Payment_Method` enum('Debit','Credit','','') NOT NULL,
+  `Account_Number` bigint(255) NOT NULL,
+  `Deposit_Amount` decimal(14,2) NOT NULL,
+  `Reference_Number` varchar(9) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `Note` varchar(255) NOT NULL,
+  `Status` enum('Processing','Done','','') NOT NULL,
+  `Date_Input` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
--- Dumping data for table `reviews`
+-- Dumping data for table `payment`
 --
 
-INSERT INTO `reviews` (`ReviewId`, `userId`, `houseitemNum`, `Comment`, `DatePosted`) VALUES
-(1, 1, 35, 'This is very good house with a very good hotdog with egg side dish and a mommy', '2024-02-27 00:12:45');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `transaction`
---
-
-CREATE TABLE `transaction` (
-  `TransactionId` int(250) NOT NULL,
-  `AppointmentId` int(250) NOT NULL,
-  `houseitemNum` int(250) NOT NULL,
-  `accountName` varchar(255) NOT NULL,
-  `accountNumber` bigint(255) NOT NULL,
-  `TransactionDate` date NOT NULL,
-  `TransactionAmount` double(10,3) NOT NULL,
-  `PaymentStatus` varchar(250) NOT NULL,
-  `referenceNumber` bigint(255) NOT NULL,
-  `DateInput` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
-
---
--- Dumping data for table `transaction`
---
-
-INSERT INTO `transaction` (`TransactionId`, `AppointmentId`, `houseitemNum`, `accountName`, `accountNumber`, `TransactionDate`, `TransactionAmount`, `PaymentStatus`, `referenceNumber`, `DateInput`) VALUES
-(1, 1, 35, 'Honezekiel\r\n', 123456789, '2024-02-27', 4000000.000, 'Not paid', 987654321, '2024-02-27 00:08:02'),
-(2, 1, 13, 'Jake ', 90123948182, '2024-02-27', 2000000.000, 'Half paid', 543219876, '2024-03-07 15:10:08'),
-(3, 2, 12, 'Jacob Mira', 871839173, '2024-03-07', 2000000.000, 'half paid', 90123948132, '2024-03-07 15:13:42');
+INSERT INTO `payment` (`paymentId`, `user_id`, `houseId`, `Fullname`, `Email_Address`, `Contact_Number`, `Bank`, `Payment_Method`, `Account_Number`, `Deposit_Amount`, `Reference_Number`, `Note`, `Status`, `Date_Input`) VALUES
+(1, 1, 1, 'Joshua Gumbao', 'joshua@gmail.com', 9104936881, 'Chinabank', 'Debit', 1234567899, 49999.00, '14X0H5I4A', 'HALF PAYMENT', '', '2024-05-30 15:07:42'),
+(2, 1, 2, 'Jake Mariscotes', 'jake@gmail.com', 9813312112, 'Landbank', 'Debit', 123454321, 400000.00, '22V0B3V3E', 'Call me later', '', '2024-05-30 15:11:28'),
+(3, 1, 2, 'Christian Factor', 'christianmarlon@gmail.com', 9813359149, 'BDO', 'Credit', 1234567882, 400000.00, '34T1K9F3N', 'mommywantsyou', '', '2024-05-30 15:13:32');
 
 -- --------------------------------------------------------
 
@@ -138,10 +113,11 @@ INSERT INTO `transaction` (`TransactionId`, `AppointmentId`, `houseitemNum`, `ac
 
 CREATE TABLE `users` (
   `user_id` int(255) NOT NULL,
+  `user_type` enum('Customer','Admin') NOT NULL,
   `Fullname` varchar(255) NOT NULL,
   `Email_Address` varchar(255) NOT NULL,
-  `Password` varchar(255) NOT NULL,
   `Username` varchar(255) NOT NULL,
+  `Password` varchar(255) NOT NULL,
   `Birthday` date NOT NULL,
   `Sex` enum('Male','Female','','') NOT NULL,
   `Address` text NOT NULL,
@@ -153,50 +129,40 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`user_id`, `Fullname`, `Email_Address`, `Password`, `Username`, `Birthday`, `Sex`, `Address`, `Phone_Number`, `Date_Login`) VALUES
-(1, 'Hon Ezekiel Bognalbal', 'minatozaki1414@gmail.com', 'honhon12345', 'honhongwapo', '0000-00-00', 'Male', 'Purok 3 Quinastillojan, Tabaco City', 9509296565, '2024-02-22 23:47:28'),
-(2, 'Solano', 'solano@gmail.com', '12345', 'Solano', '2004-05-18', 'Male', 'Tigaon, Camarines Sur', 9509296565, '2024-02-22 23:54:06'),
-(3, 'Hon Ezekiel Noble Bognalbal', 'minatozaki1414@gmail.com', 'hon12345', 'honhonpogi', '1995-05-18', 'Female', 'zone 8 san antonio tabaco city', 9509296565, '2024-02-22 23:56:37'),
-(4, 'Jacob Mira Goodboi', 'jacobmira@gmail.com', 'jacob11111', 'jacobisthekey', '2000-01-01', 'Male', 'Zone 3 Ubaliw Polangui', 9123818293, '2024-02-27 00:01:37'),
-(5, 'April Boy Ozmakapa', 'april12345@gmail.com', 'test123', 'aprilboy11', '2000-01-01', 'Male', 'zone 1 hahahahaha tabaco city', 9123818293, '2024-03-07 12:24:19');
+INSERT INTO `users` (`user_id`, `user_type`, `Fullname`, `Email_Address`, `Username`, `Password`, `Birthday`, `Sex`, `Address`, `Phone_Number`, `Date_Login`) VALUES
+(1, 'Admin', 'Hon Ezekiel Bognalbal', 'honezekielbognalbal18@gmail.com', 'admin12345', '12345', '2004-05-18', 'Male', 'Tabaco City Quinastillojan', 9509296565, '2024-05-14 23:59:52'),
+(2, 'Customer', 'sample1', 'sample1@gmail.com', 'sample1', '12345', '2010-01-01', 'Male', 'sample1sample1', 9813359149, '2024-05-28 17:44:10');
 
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indexes for table `appointment`
+-- Indexes for table `comments`
 --
-ALTER TABLE `appointment`
-  ADD PRIMARY KEY (`AppointmentId`),
-  ADD KEY `UserId` (`UserId`);
+ALTER TABLE `comments`
+  ADD PRIMARY KEY (`commentId`),
+  ADD KEY `userId` (`user_id`);
 
 --
--- Indexes for table `conversation`
+-- Indexes for table `houses`
 --
-ALTER TABLE `conversation`
-  ADD PRIMARY KEY (`MessageId`),
-  ADD KEY `userId` (`userId`);
+ALTER TABLE `houses`
+  ADD PRIMARY KEY (`houseId`);
 
 --
 -- Indexes for table `money`
 --
 ALTER TABLE `money`
-  ADD PRIMARY KEY (`ReportId`);
+  ADD PRIMARY KEY (`reportId`);
 
 --
--- Indexes for table `reviews`
+-- Indexes for table `payment`
 --
-ALTER TABLE `reviews`
-  ADD PRIMARY KEY (`ReviewId`),
-  ADD KEY `userId` (`userId`);
-
---
--- Indexes for table `transaction`
---
-ALTER TABLE `transaction`
-  ADD PRIMARY KEY (`TransactionId`),
-  ADD KEY `AppointmentId` (`AppointmentId`);
+ALTER TABLE `payment`
+  ADD PRIMARY KEY (`paymentId`),
+  ADD KEY `houseId` (`houseId`),
+  ADD KEY `payment_ibfk_1` (`user_id`);
 
 --
 -- Indexes for table `users`
@@ -209,68 +175,51 @@ ALTER TABLE `users`
 --
 
 --
--- AUTO_INCREMENT for table `appointment`
+-- AUTO_INCREMENT for table `comments`
 --
-ALTER TABLE `appointment`
-  MODIFY `AppointmentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+ALTER TABLE `comments`
+  MODIFY `commentId` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `conversation`
+-- AUTO_INCREMENT for table `houses`
 --
-ALTER TABLE `conversation`
-  MODIFY `MessageId` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `houses`
+  MODIFY `houseId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `money`
 --
 ALTER TABLE `money`
-  MODIFY `ReportId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `reportId` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `reviews`
+-- AUTO_INCREMENT for table `payment`
 --
-ALTER TABLE `reviews`
-  MODIFY `ReviewId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT for table `transaction`
---
-ALTER TABLE `transaction`
-  MODIFY `TransactionId` int(250) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+ALTER TABLE `payment`
+  MODIFY `paymentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `user_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Constraints for dumped tables
 --
 
 --
--- Constraints for table `appointment`
+-- Constraints for table `comments`
 --
-ALTER TABLE `appointment`
-  ADD CONSTRAINT `appointment_ibfk_1` FOREIGN KEY (`UserId`) REFERENCES `users` (`user_id`);
+ALTER TABLE `comments`
+  ADD CONSTRAINT `comments_ibfk_1` FOREIGN KEY (`user_Id`) REFERENCES `users` (`user_id`);
 
 --
--- Constraints for table `conversation`
+-- Constraints for table `payment`
 --
-ALTER TABLE `conversation`
-  ADD CONSTRAINT `conversation_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`user_id`);
-
---
--- Constraints for table `reviews`
---
-ALTER TABLE `reviews`
-  ADD CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`user_id`);
-
---
--- Constraints for table `transaction`
---
-ALTER TABLE `transaction`
-  ADD CONSTRAINT `transaction_ibfk_1` FOREIGN KEY (`AppointmentId`) REFERENCES `appointment` (`AppointmentId`);
+ALTER TABLE `payment`
+  ADD CONSTRAINT `payment_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`),
+  ADD CONSTRAINT `payment_ibfk_2` FOREIGN KEY (`houseId`) REFERENCES `houses` (`houseId`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
